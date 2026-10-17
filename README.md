@@ -27,13 +27,13 @@ Das installierbare Archiv liegt anschließend unter `build/distributions`.
 ### Automatische Plugin-Updates über GitHub Releases
 
 Das Plugin registriert beim Start den nativen IntelliJ-Updatefeed
-`https://github.com/cjaayy/time-tracker/releases/latest/download/updatePlugins.xml`.
+`https://github.com/cjaaayy/time-tracker/releases/latest/download/updatePlugins.xml`.
 IntelliJ prüft diesen Feed zusammen mit den übrigen Pluginquellen und bietet kompatible neue
 Versionen über den normalen Plugin-Updater an.
 
 Für eine Veröffentlichung:
 
-1. Das GitHub-Repository als **`cjaayy/time-tracker`** anlegen und dieses Projekt dorthin
+1. Das GitHub-Repository als **`cjaaayy/time-tracker`** anlegen und dieses Projekt dorthin
    pushen. Falls Besitzer oder Repositoryname abweichen, müssen der Feed in
    `TimeTrackerUpdateRepository.kt` und der Standardwert `githubRepository` in
    `build.gradle.kts` angepasst werden.

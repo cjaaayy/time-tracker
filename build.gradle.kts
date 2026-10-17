@@ -39,7 +39,7 @@ intellijPlatform {
 
 val pluginVersion = version.toString()
 val githubRepository = providers.gradleProperty("githubRepository")
-    .orElse("cjaayy/time-tracker")
+    .orElse("cjaaayy/time-tracker")
 val releaseTag = providers.gradleProperty("releaseTag")
     .orElse("v$pluginVersion")
 val pluginArchiveName = "time-tracker-$pluginVersion.zip"

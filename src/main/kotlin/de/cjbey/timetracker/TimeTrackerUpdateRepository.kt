@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 /** Registers the GitHub Releases feed with IntelliJ's native plugin updater. */
 object TimeTrackerUpdateRepository {
     private const val UPDATE_FEED =
-        "https://github.com/cjaayy/time-tracker/releases/latest/download/updatePlugins.xml"
+        "https://github.com/cjaaayy/time-tracker/releases/latest/download/updatePlugins.xml"
 
     private val registered = AtomicBoolean(false)
     private val logger = Logger.getInstance(TimeTrackerUpdateRepository::class.java)
