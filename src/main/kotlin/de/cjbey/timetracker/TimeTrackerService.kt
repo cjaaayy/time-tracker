@@ -51,6 +51,8 @@ class TimeTrackerService(private val project: Project) : PersistentStateComponen
     private var activeCharacters = 0L
     private var activeWrittenLines = mutableSetOf<String>()
     private var lastActivityAt = Instant.now()
+    private var windowInactiveSince: Instant? = null
+    private var hasObservedActiveWindow = false
     private var lastPhysicalTypingAt = Instant.EPOCH
     private var lastSyncAttempt = Instant.EPOCH
     var syncStatus: SyncStatus = SyncStatus.PENDING
@@ -179,7 +181,23 @@ class TimeTrackerService(private val project: Project) : PersistentStateComponen
             startSession(latest)
         }
 
-        val shouldRun = isProjectWindowActive() && Duration.between(lastActivityAt, Instant.now()) < IDLE_TIMEOUT
+        val now = Instant.now()
+        val windowActive = isProjectWindowActive()
+        if (windowActive) {
+            // Returning to the IDE is activity by itself. This also prevents an immediate
+            // idle pause before the first key or mouse event reaches the AWT listener.
+            if (windowInactiveSince != null) lastActivityAt = now
+            windowInactiveSince = null
+            hasObservedActiveWindow = true
+        } else if (hasObservedActiveWindow && windowInactiveSince == null) {
+            windowInactiveSince = now
+        }
+
+        val shouldRun = if (windowActive) {
+            Duration.between(lastActivityAt, now) < IDLE_TIMEOUT
+        } else {
+            windowInactiveSince?.let { Duration.between(it, now) < WINDOW_INACTIVE_GRACE } == true
+        }
         if (shouldRun && !isRunning) resumeSession()
         if (!shouldRun && isRunning) pauseSession()
     }
@@ -282,7 +300,8 @@ class TimeTrackerService(private val project: Project) : PersistentStateComponen
     }
 
     companion object {
-        private val IDLE_TIMEOUT = Duration.ofMinutes(2)
+        private val IDLE_TIMEOUT = Duration.ofMinutes(5)
+        private val WINDOW_INACTIVE_GRACE = Duration.ofMinutes(5)
         private val TYPING_EVENT_WINDOW = Duration.ofMillis(250)
         private val SYNC_INTERVAL = Duration.ofSeconds(5)
         private val HOURLY_RATE = BigDecimal("750")

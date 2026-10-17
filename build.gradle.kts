@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "de.cjbey.timetracker"
-version = "0.1.0"
+version = "0.1.1"
 
 base {
     archivesName.set("time-tracker")

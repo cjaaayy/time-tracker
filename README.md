@@ -5,10 +5,12 @@ Entwicklungszeit nach Projekt und Git-Branch.
 
 ## IntelliJ-Plugin
 
-Das Plugin erfasst Zeit, solange das Projektfenster fokussiert ist. Nach zwei Minuten ohne
-Tastatur- oder Mausaktivität wird dieselbe Session pausiert; die zwei Minuten bis zum Timeout
-bleiben Arbeitszeit. Synchronisationen verändern eine pausierte Session nicht. Ein
-Branchwechsel oder das Schließen der IDE beendet die Session.
+Das Plugin erfasst Zeit, solange am Projekt gearbeitet wird. Nach fünf Minuten ohne Tastatur-
+oder Mausaktivität wird dieselbe Session pausiert; die Zeit bis zum Timeout bleibt Arbeitszeit,
+damit insbesondere kurze Wartezeiten auf KI-Code-Agenten berücksichtigt werden. Auch beim
+Wechsel in ein anderes Programm läuft die Session für fünf Minuten weiter und wird erst danach
+pausiert. Synchronisationen verändern eine pausierte Session nicht. Ein Branchwechsel oder das
+Schließen der IDE beendet die Session.
 
 Die Statusleiste zeigt die aktuelle Sessionzeit und den Synchronisationsstatus. Ein Toolwindow
 gibt es nicht. Zeichen und nichtleere Zeilen werden nur nach physischen Tastatureingaben im
