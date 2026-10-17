@@ -1,0 +1,16 @@
+{
+  "name": "development-time-tracker-server",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Plattformunabhängiger Server und Webinterface für den Development Time Tracker",
+  "scripts": {
+    "start": "node index.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "mysql2": "^3.14.0"
+  }
+}

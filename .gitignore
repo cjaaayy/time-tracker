@@ -1,0 +1,9 @@
+.gradle/
+.idea/
+.intellijPlatform/
+build/
+out/
+*.iml
+server/data/
+server/node_modules/
+server/.env

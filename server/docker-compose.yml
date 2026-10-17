@@ -1,0 +1,44 @@
+services:
+  mysql:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-time_tracker}
+      MYSQL_USER: ${MYSQL_USER:-time_tracker}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?MYSQL_PASSWORD muss gesetzt sein}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?MYSQL_ROOT_PASSWORD muss gesetzt sein}
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "--password=${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    security_opt:
+      - no-new-privileges:true
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      TIME_TRACKER_HOST: 0.0.0.0
+      TIME_TRACKER_PORT: 8080
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-time_tracker}
+      MYSQL_USER: ${MYSQL_USER:-time_tracker}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_POOL_SIZE: ${MYSQL_POOL_SIZE:-10}
+      MYSQL_SSL: "false"
+      TIME_TRACKER_SECURE_COOKIES: ${TIME_TRACKER_SECURE_COOKIES:-true}
+    ports:
+      - "127.0.0.1:${TIME_TRACKER_PORT:-8080}:8080"
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  mysql-data:

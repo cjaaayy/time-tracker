@@ -1,0 +1,24 @@
+<idea-plugin>
+    <id>de.cjbey.timetracker</id>
+    <name>Time Tracker</name>
+    <vendor>cjaayy</vendor>
+
+    <description><![CDATA[
+        Erfasst Entwicklungszeit direkt in IntelliJ IDEA und bereitet sie für die spätere
+        Synchronisation mit dem Time-Tracker-Server vor.
+    ]]></description>
+
+    <depends>com.intellij.modules.platform</depends>
+    <depends>Git4Idea</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <projectService serviceImplementation="de.cjbey.timetracker.TimeTrackerService"/>
+        <projectService serviceImplementation="de.cjbey.timetracker.TimeTrackerSettings"/>
+        <projectConfigurable instance="de.cjbey.timetracker.TimeTrackerConfigurable"
+                             displayName="Time Tracker"
+                             parentId="tools"/>
+        <postStartupActivity implementation="de.cjbey.timetracker.TimeTrackerStartupActivity"/>
+        <statusBarWidgetFactory id="DevelopmentTimeTrackerStatus"
+                                implementation="de.cjbey.timetracker.TimeTrackerStatusBarWidgetFactory"/>
+    </extensions>
+</idea-plugin>

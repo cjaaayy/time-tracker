@@ -1,0 +1,53 @@
+name: Release IntelliJ plugin
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Validate tag and build release
+        shell: bash
+        run: |
+          VERSION="$(./gradlew properties -q | sed -n 's/^version: //p')"
+          if [ "${GITHUB_REF_NAME}" != "v${VERSION}" ]; then
+            echo "Tag ${GITHUB_REF_NAME} does not match Gradle version v${VERSION}." >&2
+            exit 1
+          fi
+          ./gradlew clean buildPlugin verifyPlugin generateUpdateRepository \
+            -PreleaseTag="${GITHUB_REF_NAME}" \
+            -PgithubRepository="${GITHUB_REPOSITORY}"
+          cd build/distributions
+          sha256sum "time-tracker-${VERSION}.zip" > "time-tracker-${VERSION}.zip.sha256"
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          gh release create "${GITHUB_REF_NAME}" \
+            "build/distributions/time-tracker-${VERSION}.zip" \
+            "build/distributions/time-tracker-${VERSION}.zip.sha256" \
+            "build/update-repository/updatePlugins.xml" \
+            --title "Time Tracker ${VERSION}" \
+            --generate-notes \
+            --verify-tag
